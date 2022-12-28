@@ -1,6 +1,7 @@
 package org.example;
 
 import java.io.BufferedReader;
+import java.io.Console;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -9,10 +10,18 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        Path filePath = Paths.get("interviewFindRelationship.csv");
+        String filename;
+
+        if (args.length > 0) {
+            filename = args[0];
+        } else {
+            Console console = System.console();
+            filename = console.readLine("Input filename: ");
+        }
+
+        Path filePath = Paths.get(filename);
 
         try (BufferedReader reader = Files.newBufferedReader(filePath)) {
-
             List<Person> personList = new ArrayList<>();
             List<Person> duplicateList = new ArrayList<>();
 
@@ -22,30 +31,29 @@ public class Main {
                 personList.add(person);
             });
 
-            for (Person person: personList) {
-                for (Person p1: personList) {
-                    if (person.equals(p1)) {
+
+            for (Person p1 : personList) {
+                for (Person p2 : personList) {
+                    if (p1.equals(p2)) {
                         continue;
                     }
-                    int counter = 0;
-                    if (person.name.equals(p1.name)) {
-                        counter += 1;
-                    }
-                    if (person.IdType.equals(p1.IdType) && person.IdNumber.equals(p1.IdNumber)) {
-                        counter += 1;
-                    }
-                    if (person.dob.equals(p1.dob)) {
-                        counter += 1;
-                    }
-
-                    if (counter >= 2) {
-                        System.out.println("Duplicate:\n" + p1 + "\n" + person);
+                    if (p1.samePerson(p2)) {
+                        duplicateList.add(p1);
                     }
                 }
             }
 
+            personList.removeAll(duplicateList);
+
+            System.out.println("Duplicate Person");
+            duplicateList.forEach(System.out::println);
+
+            System.out.println("Unique Person");
+            personList.forEach(System.out::println);
+
         } catch (Exception ex) {
-            System.out.println(ex.getMessage());
+            System.out.println("Error, " + ex);
         }
+
     }
 }

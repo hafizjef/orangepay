@@ -1,5 +1,7 @@
 package org.example;
 
+import java.util.Objects;
+
 public class Person {
     String name;
     String IdType;
@@ -11,6 +13,20 @@ public class Person {
         IdType = idType;
         IdNumber = idNumber;
         this.dob = dob;
+    }
+
+    public boolean samePerson(Person person) {
+        int counter = 0;
+        if (Objects.equals(name, person.name)) {
+            counter += 1;
+        }
+        if (Objects.equals(IdType, person.IdType) && Objects.equals(IdNumber, person.IdNumber)) {
+            counter += 1;
+        }
+        if (Objects.equals(dob, person.dob)) {
+            counter += 1;
+        }
+        return counter >= 2;
     }
 
     @Override
